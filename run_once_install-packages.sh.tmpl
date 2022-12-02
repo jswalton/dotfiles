@@ -18,11 +18,11 @@
 {{- $pkgmgr := "" }}
 {{if eq .chezmoi.osRelease.id "ubuntu" -}}
 {{  $pkgmgr = "apt" }}
+{{  $sudo }}{{$pkgmgr }} update
 {{else if eq .chezmoi.osRelease.id "fedora" -}}
 {{  $pkgmgr = "dnf" }}
 {{ end -}}
 
-{{ $sudo }}{{$pkgmgr }} update
 {{ $sudo }}{{$pkgmgr }} install -y {{ $packages | join " " }}
 
 
