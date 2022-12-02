@@ -16,21 +16,21 @@
 {{ end -}}
 
 {{- $pkgmgr := "" }}
-{{- if eq .chezmoi.osRelease.id "debian" -}}
-{{-   $pkgmgr = "apt" }}
-{{ else if eq .chezmoi.osRelease.id "fedora" -}}
-{{-   $pkgmgr = "dnf" }}
+{{if eq .chezmoi.osRelease.id "ubuntu" -}}
+{{  $pkgmgr = "apt" }}
+{{else if eq .chezmoi.osRelease.id "fedora" -}}
+{{  $pkgmgr = "dnf" }}
 {{ end -}}
 
-{{ $sudo }}{{$pkgmgr }}update
-{{ $sudo }}{{$pkgmgr }}install {{ $packages | join " " }}
+{{ $sudo }}{{$pkgmgr }} update
+{{ $sudo }}{{$pkgmgr }} install -y {{ $packages | join " " }}
 
 
 
 #exa
 curl -Lo exa.zip "https://github.com/ogham/exa/releases/download/v0.10.0/exa-linux-x86_64-v0.10.0.zip"
 sudo unzip -q exa.zip bin/exa -d /usr/local
-rm -rf
+rm -rf exa.zip
 
 #fzf
 #if [ ! -d "{{.chezmoi.homeDir}}"/.fzf ]; then
