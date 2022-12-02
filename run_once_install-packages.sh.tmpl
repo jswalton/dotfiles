@@ -1,25 +1,42 @@
 {{ if eq .chezmoi.os "linux" -}}
 #!/bin/sh
 
+#packages through apt -- TODO: Decide weather to use dnf (fedora) or apt (ubuntu) -- i use both
+sudo apt install bat
+sudo apt install git
+sudo apt install neovim
 sudo apt install ripgrep
+sudo apt install zip unzip
 
-sh -c 'curl -fLo "${XDG_DATA_HOME:-$HOME/.local/share}"/nvim/site/autoload/plug.vim --create-dirs \
-       https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
+#exa
+curl -Lo exa.zip "https://github.com/ogham/exa/releases/download/v0.10.0/exa-linux-x86_64-v0.10.0.zip"
+sudo unzip -q exa.zip bin/exa -d /usr/local
+rm -rf
+
+#fzf
+#if [ ! -d "{{.chezmoi.homeDir}}"/.fzf ]; then
+    git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
+    ~/.fzf/install
+#fi
+
+#vim-plug
+#if [ ! -f "{{.chezmoi.homeDir}}"/.local/share/nvim/site/autoload/plug.vim ]; then
+    sh -c 'curl -fLo "${XDG_DATA_HOME:-$HOME/.local/share}"/nvim/site/autoload/plug.vim --create-dirs \
+    https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
+#fi
+
 
 {{ else if eq .chezmoi.os "darwin" -}}
 #!/bin/sh
 
 brew bundle --no-lock --file=/dev/stdin <<EOF
-brew "git"
+brew "bat"
 brew "exa"
 brew "fzf"
-brew "bat"
-brew "iterm"
 brew "ripgrep"
 cask "iterm2"
 cask "visual-studio-code"
 EOF
-
 $(brew --prefix)/opt/fzf/install
 
 {{ end -}}
