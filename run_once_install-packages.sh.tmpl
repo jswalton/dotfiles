@@ -1,12 +1,31 @@
 {{ if eq .chezmoi.os "linux" -}}
 #!/bin/sh
 
-#packages through apt -- TODO: Decide weather to use dnf (fedora) or apt (ubuntu) -- i use both
-sudo apt install bat
-sudo apt install git
-sudo apt install neovim
-sudo apt install ripgrep
-sudo apt install zip unzip
+{{ $packages := list
+     "bat"
+     "git"
+     "neovim"
+     "neovim"
+     "ripgrep"
+     "zip"
+     "unzip" -}}
+
+{{ $sudo := "sudo " -}}
+{{ if eq .chezmoi.username "root" -}}
+{{   $sudo = "" -}}
+{{ end -}}
+
+{{- $pkgmgr := "" }}
+{{- if eq .chezmoi.osRelease.id "debian" -}}
+{{-   $pkgmgr = "apt" }}
+{{ else if eq .chezmoi.osRelease.id "fedora" -}}
+{{-   $pkgmgr = "dnf" }}
+{{ end -}}
+
+{{ $sudo }}{{$pkgmgr }}update
+{{ $sudo }}{{$pkgmgr }}install {{ $packages | join " " }}
+
+
 
 #exa
 curl -Lo exa.zip "https://github.com/ogham/exa/releases/download/v0.10.0/exa-linux-x86_64-v0.10.0.zip"
