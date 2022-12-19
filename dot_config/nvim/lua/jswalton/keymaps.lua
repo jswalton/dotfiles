@@ -1,11 +1,4 @@
 vim.g.mapleader = " "
-
-require('lualine').setup {
-    options = {
-      theme = 'tokyonight'
-    }
-}
-require("bufferline").setup{}
 vim.opt.termguicolors = true
 
 local builtin = require('telescope.builtin')

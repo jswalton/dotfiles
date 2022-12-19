@@ -38,11 +38,9 @@ rm -rf exa.zip
     ~/.fzf/install
 #fi
 
-#vim-plug
-#if [ ! -f "{{.chezmoi.homeDir}}"/.local/share/nvim/site/autoload/plug.vim ]; then
-    sh -c 'curl -fLo "${XDG_DATA_HOME:-$HOME/.local/share}"/nvim/site/autoload/plug.vim --create-dirs \
-    https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
-#fi
+#packer
+git clone --depth 1 https://github.com/wbthomason/packer.nvim\
+ ~/.local/share/nvim/site/pack/packer/start/packer.nvim
 
 
 {{ else if eq .chezmoi.os "darwin" -}}
