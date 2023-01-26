@@ -53,7 +53,8 @@ require('packer').startup(function(use)
   
   -- noob needing help to remember
   use "folke/which-key.nvim"
-
+  use "windwp/nvim-autopairs"
+  
   -- Fuzzy Finder (files, lsp, etc)
   use { 'nvim-telescope/telescope.nvim', branch = '0.1.x', requires = { 'nvim-lua/plenary.nvim' } }
 
@@ -187,6 +188,7 @@ require('gitsigns').setup {
 -- [[ Configure Telescope ]]
 -- See `:help telescope` and `:help telescope.setup()`
 require('telescope').setup {
+  
   defaults = {
     mappings = {
       i = {
@@ -194,11 +196,14 @@ require('telescope').setup {
         ['<C-d>'] = false,
       },
     },
-  },
+  }
 }
 
 -- Enable telescope fzf native, if installed
 pcall(require('telescope').load_extension, 'fzf')
+
+-- Enable autopairs
+require("nvim-autopairs").setup {}
 
 -- See `:help telescope.builtin`
 vim.keymap.set('n', '<leader>?', require('telescope.builtin').oldfiles, { desc = '[?] Find recently opened files' })
@@ -217,6 +222,7 @@ vim.keymap.set('n', '<leader>sw', require('telescope.builtin').grep_string, { de
 vim.keymap.set('n', '<leader>sg', require('telescope.builtin').live_grep, { desc = '[S]earch by [G]rep' })
 vim.keymap.set('n', '<leader>sd', require('telescope.builtin').diagnostics, { desc = '[S]earch [D]iagnostics' })
 
+
 -- [[ Configure Treesitter ]]
 -- See `:help nvim-treesitter`
 require('nvim-treesitter.configs').setup {
@@ -229,7 +235,6 @@ require('nvim-treesitter.configs').setup {
     enable = true,
     keymaps = {
       init_selection = '<c-space>',
-      node_incremental = '<c-space>',
       scope_incremental = '<c-s>',
       node_decremental = '<c-backspace>',
     },
@@ -281,10 +286,10 @@ require('nvim-treesitter.configs').setup {
 }
 
 -- Diagnostic keymaps
-vim.keymap.set('n', '[d', vim.diagnostic.goto_prev)
-vim.keymap.set('n', ']d', vim.diagnostic.goto_next)
-vim.keymap.set('n', '<leader>e', vim.diagnostic.open_float)
-vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist)
+vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, { desc = 'Prev Diagnostic' })
+vim.keymap.set('n', ']d', vim.diagnostic.goto_next, { desc = 'Next Diagnostic'})
+vim.keymap.set('n', '<leader>e', vim.diagnostic.open_float, { desc = 'Open Diagnostic Float'})
+vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open Diagnostic List'})
 
 -- LSP settings.
 --  This function gets run when an LSP connects to a particular buffer.
@@ -340,7 +345,7 @@ require('mason').setup()
 
 -- Enable the following language servers
 -- Feel free to add/remove any LSPs that you want here. They will automatically be installed
-local servers = { 'pyright', 'tsserver', 'angularls' }
+local servers = { 'pylsp', 'tsserver', 'angularls' }
 
 -- Ensure the servers above are installed
 require('mason-lspconfig').setup {
@@ -434,7 +439,7 @@ cmp.setup {
   },
 }
 
-require("which-key").setup {
+require("which-key").setup { -- custom --
   -- your configuration comes here
   -- or leave it empty to use the default settings
   -- refer to the configuration section below
