@@ -293,9 +293,10 @@ require('nvim-treesitter.configs').setup {
   },
 }
 
--- dauip
+-- dapui setup -- custom layouts 
 require("dapui").setup()
 
+-- automatically open/close dapui when dap actions occur 
 local dap, dapui = require("dap"), require("dapui")
 dap.listeners.after.event_initialized["dapui_config"] = function()
   dapui.open()
@@ -307,22 +308,24 @@ dap.listeners.before.event_exited["dapui_config"] = function()
   dapui.close()
 end
 
+vim.fn.sign_define('DapBreakpoint', {text='🔴', texthl='', linehl='', numhl=''})
+
+-- debug toggle mappings 
 vim.keymap.set('n', "<F4>", require('dapui').toggle, { desc = 'toggle dapui (default layout)' })
 vim.keymap.set('n', "<F5>", require('dap').toggle_breakpoint, { desc = 'toggle breakpoint' })
-vim.keymap.set('n', "<F9>", require('dap').continue, { desc = 'debug - continue' })
 
+-- debug actions mappings  
+vim.keymap.set('n', "<F9>", require('dap').continue, { desc = 'debug - continue' })
 vim.keymap.set('n', "<F1>", require('dap').step_over, { desc = 'debug - step over' })
 vim.keymap.set('n', "<F2>", require('dap').step_into, { desc = 'debug - step into' })
 vim.keymap.set('n', "<F3>", require('dap').step_out, { desc = 'debug - step out' })
 
+-- debug actions mappings - phonetics
 vim.keymap.set('n', "<Leader>dbp", require('dap').toggle_breakpoint, { desc = '[D]ebug - toggle [B]reak[P]oint' })
 vim.keymap.set('n', "<Leader>dsc", require('dap').continue, { desc = '[D]ebug - [S]tep [C]ontinue' })
 vim.keymap.set('n', "<Leader>dsv", require('dap').step_over, { desc = '[D]ebug - [S]tep o[V]er'})
 vim.keymap.set('n', "<Leader>dsi", require('dap').step_into, { desc = '[D]ebug - [S]tep [I]nto' })
 vim.keymap.set('n', "<Leader>dso", require('dap').step_out, { desc = '[D]ebug - [S]tep [O]ut' })
-
-vim.keymap.set('n', "<Leader>dvh", function() return require("dapui").float_element('scopes') end)
--- vim.keymap.set('n', "<Leader>dv", function() return require('dapui').toggle({ layout = 3 })end, { desc = '[D]ebug [V]ariables' })
 
 -- dap-python
 require('dap-python').setup('/usr/bin/python')
@@ -519,3 +522,5 @@ require("which-key").setup { -- custom --
 
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et
+-- Install packer
+local install_path = vim.fn.stdpath 'data' .. '/site/pack/packer/start/packer.nvim'
