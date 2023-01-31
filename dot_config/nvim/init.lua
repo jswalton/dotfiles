@@ -23,6 +23,14 @@ require('packer').startup(function(use)
     },
   }
 
+  -- DAP(debug) related plugins
+  use 'mfussenegger/nvim-dap'
+  use 'mfussenegger/nvim-dap-python'
+  use { "rcarriga/nvim-dap-ui", requires = {"mfussenegger/nvim-dap"} }
+  use 'theHamsta/nvim-dap-virtual-text'
+  use 'nvim-telescope/telescope-dap.nvim'
+  use 'David-Kunz/jester'
+
   use { -- Autocompletion
     'hrsh7th/nvim-cmp',
     requires = { 'hrsh7th/cmp-nvim-lsp', 'L3MON4D3/LuaSnip', 'saadparwaiz1/cmp_luasnip' },
@@ -46,15 +54,16 @@ require('packer').startup(function(use)
   use 'lewis6991/gitsigns.nvim'
 
   use 'navarasu/onedark.nvim' -- Theme inspired by Atom
+  use 'kyazdani42/nvim-web-devicons' --icons
   use 'nvim-lualine/lualine.nvim' -- Fancier statusline
   use 'lukas-reineke/indent-blankline.nvim' -- Add indentation guides even on blank lines
   use 'numToStr/Comment.nvim' -- "gc" to comment visual regions/lines
   use 'tpope/vim-sleuth' -- Detect tabstop and shiftwidth automatically
-  
+
   -- noob needing help to remember
   use "folke/which-key.nvim"
   use "windwp/nvim-autopairs"
-  
+
   -- Fuzzy Finder (files, lsp, etc)
   use { 'nvim-telescope/telescope.nvim', branch = '0.1.x', requires = { 'nvim-lua/plenary.nvim' } }
 
@@ -155,12 +164,6 @@ vim.api.nvim_create_autocmd('TextYankPost', {
 -- Set lualine as statusline
 -- See `:help lualine.txt`
 require('lualine').setup {
-  options = {
-    icons_enabled = false,
-    theme = 'onedark',
-    component_separators = '|',
-    section_separators = '',
-  },
 }
 
 -- Enable Comment.nvim
@@ -202,6 +205,13 @@ require('telescope').setup {
 -- Enable telescope fzf native, if installed
 pcall(require('telescope').load_extension, 'fzf')
 
+-- Enable telescope dap
+require('telescope').load_extension('dap')
+
+-- Enable virtual text for dap
+require("nvim-dap-virtual-text").setup()
+
+
 -- Enable autopairs
 require("nvim-autopairs").setup {}
 
@@ -221,7 +231,6 @@ vim.keymap.set('n', '<leader>sh', require('telescope.builtin').help_tags, { desc
 vim.keymap.set('n', '<leader>sw', require('telescope.builtin').grep_string, { desc = '[S]earch current [W]ord' })
 vim.keymap.set('n', '<leader>sg', require('telescope.builtin').live_grep, { desc = '[S]earch by [G]rep' })
 vim.keymap.set('n', '<leader>sd', require('telescope.builtin').diagnostics, { desc = '[S]earch [D]iagnostics' })
-
 
 -- [[ Configure Treesitter ]]
 -- See `:help nvim-treesitter`
@@ -284,6 +293,83 @@ require('nvim-treesitter.configs').setup {
     },
   },
 }
+
+-- dauip
+require("dapui").setup()
+
+local dap, dapui = require("dap"), require("dapui")
+dap.listeners.after.event_initialized["dapui_config"] = function()
+  dapui.open()
+end
+dap.listeners.before.event_terminated["dapui_config"] = function()
+  dapui.close()
+end
+dap.listeners.before.event_exited["dapui_config"] = function()
+  dapui.close()
+end
+
+vim.keymap.set('n', '<F5>', require('dap').toggle_breakpoint, { desc = '[D]ebug - [T]oggle [B]reakpoint' })
+vim.keymap.set('n', "<F4>", require('dapui').toggle )
+vim.keymap.set('n', "<F5>", require('dap').toggle_breakpoint )
+vim.keymap.set('n', "<F9>", require('dap').continue )
+
+vim.keymap.set('n', "<F1>", require('dap').step_over )
+vim.keymap.set('n', "<F2>", require('dap').step_into )
+vim.keymap.set('n', "<F3>", require('dap').step_out )
+
+vim.keymap.set('n', "<Leader>dsc", require('dap').continue )
+vim.keymap.set('n', "<Leader>dsv", require('dap').step_over )
+vim.keymap.set('n', "<Leader>dsi", require('dap').step_into )
+vim.keymap.set('n', "<Leader>dso", require('dap').step_out )
+
+-- vim.keymap.set('n', "<Leader>dhh", require('dap.ui.variables').hover )
+
+vim.keymap.set('n', "<Leader>duh", require('dap.ui.widgets').hover )
+-- vim.keymap.set('n', "<Leader>duf", ":lua local widgets=require('dap.ui.widgets');widgets.centered_float(widgets.scopes)<CR>" )
+
+vim.keymap.set('n', "<Leader>dro", require('dap').repl.open )
+vim.keymap.set('n', "<Leader>drl", require('dap').repl.run_last )
+
+-- vim.keymap.set('n', "<Leader>dbc", require('dap').set_breakpoint(vim.fn.input('Breakpoint condition: '))<CR>" })
+-- vim.keymap.set('n', "<Leader>dbm", require('dap').set_breakpoint({ nil, nil, vim.fn.input('Log point message: ') })<CR>" })
+-- vim.keymap.set('n', "<Leader>dbt", require('dap').toggle_breakpoint })
+
+-- vim.keymap.set('n', "<Leader>dc", require('dap.ui.variables').scopes })
+-- vim.keymap.set('n', '<Leader>di', require('dapui').toggle})
+
+-- dap-python
+require('dap-python').setup('/usr/bin/python')
+-- require('dap-python').resolve_python = function()
+--   return '/usr/bin/python'
+-- end
+require('dap-python').test_runner = 'unittest'
+
+local dap = require('dap')
+dap.adapters.node2 = {
+  type = 'executable',
+  command = 'node',
+  args = {os.getenv('HOME') ..'.local/share/nvim/mason/packages/node-debug2-adapter/out/src/nodeDebug.js'},
+}
+dap.configurations.javascript = {
+  {
+    name = 'Launch',
+    type = 'node2',
+    request = 'launch',
+    program = '${file}',
+    cwd = vim.fn.getcwd(),
+    sourceMaps = true,
+    protocol = 'inspector',
+    console = 'integratedTerminal',
+  },
+  {
+    -- For this to work you need to make sure the node process is started with the `--inspect` flag.
+    name = 'Attach to process',
+    type = 'node2',
+    request = 'attach',
+    processId = require'dap.utils'.pick_process,
+  },
+}
+
 
 -- Diagnostic keymaps
 vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, { desc = 'Prev Diagnostic' })
