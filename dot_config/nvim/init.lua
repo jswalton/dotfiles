@@ -191,7 +191,6 @@ require('gitsigns').setup {
 -- [[ Configure Telescope ]]
 -- See `:help telescope` and `:help telescope.setup()`
 require('telescope').setup {
-  
   defaults = {
     mappings = {
       i = {
@@ -308,49 +307,36 @@ dap.listeners.before.event_exited["dapui_config"] = function()
   dapui.close()
 end
 
-vim.keymap.set('n', '<F5>', require('dap').toggle_breakpoint, { desc = '[D]ebug - [T]oggle [B]reakpoint' })
-vim.keymap.set('n', "<F4>", require('dapui').toggle )
-vim.keymap.set('n', "<F5>", require('dap').toggle_breakpoint )
-vim.keymap.set('n', "<F9>", require('dap').continue )
+vim.keymap.set('n', "<F4>", require('dapui').toggle, { desc = 'toggle dapui (default layout)' })
+vim.keymap.set('n', "<F5>", require('dap').toggle_breakpoint, { desc = 'toggle breakpoint' })
+vim.keymap.set('n', "<F9>", require('dap').continue, { desc = 'debug - continue' })
 
-vim.keymap.set('n', "<F1>", require('dap').step_over )
-vim.keymap.set('n', "<F2>", require('dap').step_into )
-vim.keymap.set('n', "<F3>", require('dap').step_out )
+vim.keymap.set('n', "<F1>", require('dap').step_over, { desc = 'debug - step over' })
+vim.keymap.set('n', "<F2>", require('dap').step_into, { desc = 'debug - step into' })
+vim.keymap.set('n', "<F3>", require('dap').step_out, { desc = 'debug - step out' })
 
-vim.keymap.set('n', "<Leader>dsc", require('dap').continue )
-vim.keymap.set('n', "<Leader>dsv", require('dap').step_over )
-vim.keymap.set('n', "<Leader>dsi", require('dap').step_into )
-vim.keymap.set('n', "<Leader>dso", require('dap').step_out )
+vim.keymap.set('n', "<Leader>dbp", require('dap').toggle_breakpoint, { desc = '[D]ebug - toggle [B]reak[P]oint' })
+vim.keymap.set('n', "<Leader>dsc", require('dap').continue, { desc = '[D]ebug - [S]tep [C]ontinue' })
+vim.keymap.set('n', "<Leader>dsv", require('dap').step_over, { desc = '[D]ebug - [S]tep o[V]er'})
+vim.keymap.set('n', "<Leader>dsi", require('dap').step_into, { desc = '[D]ebug - [S]tep [I]nto' })
+vim.keymap.set('n', "<Leader>dso", require('dap').step_out, { desc = '[D]ebug - [S]tep [O]ut' })
 
--- vim.keymap.set('n', "<Leader>dhh", require('dap.ui.variables').hover )
-
-vim.keymap.set('n', "<Leader>duh", require('dap.ui.widgets').hover )
--- vim.keymap.set('n', "<Leader>duf", ":lua local widgets=require('dap.ui.widgets');widgets.centered_float(widgets.scopes)<CR>" )
-
-vim.keymap.set('n', "<Leader>dro", require('dap').repl.open )
-vim.keymap.set('n', "<Leader>drl", require('dap').repl.run_last )
-
--- vim.keymap.set('n', "<Leader>dbc", require('dap').set_breakpoint(vim.fn.input('Breakpoint condition: '))<CR>" })
--- vim.keymap.set('n', "<Leader>dbm", require('dap').set_breakpoint({ nil, nil, vim.fn.input('Log point message: ') })<CR>" })
--- vim.keymap.set('n', "<Leader>dbt", require('dap').toggle_breakpoint })
-
--- vim.keymap.set('n', "<Leader>dc", require('dap.ui.variables').scopes })
--- vim.keymap.set('n', '<Leader>di', require('dapui').toggle})
+vim.keymap.set('n', "<Leader>dvh", function() return require("dapui").float_element('scopes') end)
+-- vim.keymap.set('n', "<Leader>dv", function() return require('dapui').toggle({ layout = 3 })end, { desc = '[D]ebug [V]ariables' })
 
 -- dap-python
 require('dap-python').setup('/usr/bin/python')
--- require('dap-python').resolve_python = function()
---   return '/usr/bin/python'
--- end
 require('dap-python').test_runner = 'unittest'
 
-local dap = require('dap')
-dap.adapters.node2 = {
+-- dap adapters 
+require('dap').adapters.node2 = {
   type = 'executable',
   command = 'node',
   args = {os.getenv('HOME') ..'.local/share/nvim/mason/packages/node-debug2-adapter/out/src/nodeDebug.js'},
 }
-dap.configurations.javascript = {
+
+-- dap configurations
+require('dap').configurations.javascript = {
   {
     name = 'Launch',
     type = 'node2',
