@@ -130,6 +130,11 @@ vim.wo.signcolumn = 'yes'
 
 -- Set colorscheme
 vim.o.termguicolors = true
+
+require('onedark').setup {
+  style = 'warmer',
+  transparent = true
+}
 vim.cmd [[colorscheme onedark]]
 
 -- Set completeopt to have a better completion experience
@@ -164,6 +169,9 @@ vim.api.nvim_create_autocmd('TextYankPost', {
 -- Set lualine as statusline
 -- See `:help lualine.txt`
 require('lualine').setup {
+  options = {
+    theme = 'onedark'
+  }
 }
 
 -- Enable Comment.nvim
@@ -335,7 +343,7 @@ require('dap-python').test_runner = 'unittest'
 require('dap').adapters.node2 = {
   type = 'executable',
   command = 'node',
-  args = {os.getenv('HOME') ..'.local/share/nvim/mason/packages/node-debug2-adapter/out/src/nodeDebug.js'},
+  args = {os.getenv('HOME') ..'/.local/share/nvim/mason/packages/node-debug2-adapter/out/src/nodeDebug.js'},
 }
 
 -- dap configurations
