@@ -3,8 +3,8 @@ return {
     config = function()
         require('onedark').setup { --depends on init.lua containing "onedark"
             style = 'warmer',
-            transparent = trues
+            transparent = true
         }
         require('onedark').load()
-    end,       
+    end,
 }

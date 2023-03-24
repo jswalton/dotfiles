@@ -125,7 +125,7 @@ require('lazy').setup({
     -- See `:help lualine.txt`
     opts = {
       options = {
-        icons_enabled = true,
+        icons_enabled = false,
         theme = 'onedark',
         component_separators = '|',
         section_separators = '',
@@ -407,9 +407,16 @@ end
 --  Add any additional override configuration in the following tables. They will be passed to
 --  the `settings` field of the server config. You must look up that documentation yourself.
 local servers = {
-  pylsp = {}, --jswalton custom
+  -- pylsp = {
+  --   plugins = {
+  --     rope_autoimport = {
+  --       enabled = true
+  --     }
+  --   }
+  -- }, --jswalton custom
   tsserver = {},  --jswalton custom
   angularls = {}, --jswalton custom
+
   lua_ls = {
     Lua = {
       workspace = { checkThirdParty = false },
@@ -425,8 +432,7 @@ require('neodev').setup()
 local capabilities = vim.lsp.protocol.make_client_capabilities()
 capabilities = require('cmp_nvim_lsp').default_capabilities(capabilities)
 
--- Setup mason so it can manage external tooling
-require('mason').setup()
+
 
 -- Ensure the servers above are installed
 local mason_lspconfig = require 'mason-lspconfig'
