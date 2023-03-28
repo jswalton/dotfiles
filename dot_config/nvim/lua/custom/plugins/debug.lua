@@ -29,8 +29,7 @@ return {
   config = function()
     local dap = require 'dap'
     local dapui = require 'dapui'
-    
-    require('mason').setup() -- janky setup -- this is done in init.lua as well
+
     require('mason-nvim-dap').setup {
       -- Makes a best effort to setup the various debuggers with
       -- reasonable debug configurations
