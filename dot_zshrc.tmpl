@@ -130,9 +130,13 @@ source $ZSH/oh-my-zsh.sh
 
 
 {{- if lookPath "bat" }}
+#alias cat to bat
 alias cat=bat
+
 {{- else if lookPath "batcat" }}
+#alias cat to batcat
 alias cat=batcat
+
 {{- end }}
 {{- if lookPath "exa" }}
 #remap ls to exa
@@ -146,12 +150,18 @@ alias lC='la --sort=changed'            # Long, sort changed
 alias lM='la --sort=modified'           # Long, sort modified
 alias lS='la --sort=size'               # Long, sort size
 alias lX='la --sort=extension'          # Long, sort extension
+
 {{- end }}
 
+#include env in sudo
 alias sudo="sudo -E"
 
+#alias vi/vim to neovim
 alias vi="nvim"
 alias vim="nvim"
+
+#extra git aliases
+alias gcob ='git checkout $(git branch --list | fzf)'
 
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
@@ -163,9 +173,15 @@ export NVM_DIR="$HOME/.nvm"
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 alias config='/usr/bin/git --git-dir=/home/joshuawalton/.cfg/ --work-tree=/home/joshuawalton'
 
-# for windows terminal
-## keep_current_path() {
-##   printf "\e]9;9;%s\e\\" "$(wslpath -w "$PWD")"
-## }
-## precmd_functions+=(keep_current_path)
+
+# for windows terminal / wsl
+{{ if eq .chezmoi.os "linux" }}
+{{   if (.chezmoi.kernel.osrelease | lower | contains "microsoft") }}
+keep_current_path() {
+  printf "\e]9;9;%s\e\\" "$(wslpath -w "$PWD")"
+}
+precmd_functions+=(keep_current_path)
+{{   end }}
+{{ end }}
+
 
