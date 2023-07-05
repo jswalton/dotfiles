@@ -31,6 +31,9 @@ curl -Lo exa.zip "https://github.com/ogham/exa/releases/download/v0.10.0/exa-lin
 sudo unzip -q exa.zip bin/exa -d /usr/local
 rm -rf exa.zip
 
+#zoxide
+curl -sS https://raw.githubusercontent.com/ajeetdsouza/zoxide/main/install.sh | bash
+
 #fzf
 #if [ ! -d "{{.chezmoi.homeDir}}"/.fzf ]; then
     git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
