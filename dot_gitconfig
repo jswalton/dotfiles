@@ -1,0 +1,20 @@
+[core]
+ 	editor = nvim
+	pager = delta
+[interactive]
+	diffFilter = delta --color-only
+[color]
+	ui = true
+[diff]
+	colorMoved = default
+[delta]
+	navigate = true
+	line-numbers = true
+	light = false
+[merge]
+	conflictstyle = diff3
+	tool = vimdiff
+[mergetool]
+	path = nvim
+[init]
+	defaultBranch = main
