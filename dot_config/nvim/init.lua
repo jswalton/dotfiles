@@ -121,18 +121,45 @@ require('lazy').setup({
     -- Adds git releated signs to the gutter, as well as utilities for managing changes
     'lewis6991/gitsigns.nvim',
     opts = {
-      -- See `:help gitsigns.txt`
-      signs = {
-        add = { text = '+' },
-        change = { text = '~' },
-        delete = { text = '_' },
-        topdelete = { text = '‾' },
-        changedelete = { text = '~' },
-      },
       on_attach = function(bufnr)
-        vim.keymap.set('n', '[c', require('gitsigns').prev_hunk, { buffer = bufnr, desc = 'Go to Previous Hunk' })
-        vim.keymap.set('n', ']c', require('gitsigns').next_hunk, { buffer = bufnr, desc = 'Go to Next Hunk' })
-        vim.keymap.set('n', '<leader>ph', require('gitsigns').preview_hunk, { buffer = bufnr, desc = '[P]review [H]unk' })
+        local gs = package.loaded.gitsigns
+
+        local function map(mode, l, r, opts)
+          opts = opts or {}
+          opts.buffer = bufnr
+          vim.keymap.set(mode, l, r, opts)
+        end
+
+        -- Navigation
+        map('n', ']c', function()
+          if vim.wo.diff then return ']c' end
+          vim.schedule(function() gs.next_hunk() end)
+          return '<Ignore>'
+        end, {expr=true})
+
+        map('n', '[c', function()
+          if vim.wo.diff then return '[c' end
+          vim.schedule(function() gs.prev_hunk() end)
+          return '<Ignore>'
+        end, {expr=true})
+
+        -- Actions
+        map('n', '<leader>hs', gs.stage_hunk, {desc = '[H]unk [S]tage'})
+        map('n', '<leader>hr', gs.reset_hunk, {desc = '[H]unk [R]eset'})
+        map('v', '<leader>hs', function() gs.stage_hunk {vim.fn.line('.'), vim.fn.line('v')} end, {desc = '[H]unk [S]tage'})
+        map('v', '<leader>hr', function() gs.reset_hunk {vim.fn.line('.'), vim.fn.line('v')} end, {desc = '[H]unk [R]eset'})
+        map('n', '<leader>hsf', gs.stage_buffer, {desc = '[H]unk [S]tage [F]ile'})
+        map('n', '<leader>hu', gs.undo_stage_hunk, {desc = '[H]unk [U]ndo Stage'})
+        map('n', '<leader>hrf', gs.reset_buffer, {desc = '[H]unk [R]eset [F]ile'})
+        map('n', '<leader>hp', gs.preview_hunk, {desc = '[H]unk [P]review'})
+        map('n', '<leader>hb', function() gs.blame_line{full=true} end, {desc = '[H]unk [B]lame'})
+        map('n', '<leader>tb', gs.toggle_current_line_blame, {desc = '[T]oggle current line [B]lame'})
+        map('n', '<leader>hd', gs.diffthis, {desc = '[H]unk [D]iff'})
+        map('n', '<leader>hD', function() gs.diffthis('~') end, {desc = '[h]unk [D]iff'})
+        map('n', '<leader>td', gs.toggle_deleted, {desc = '[T]oggle [D]eleted'})
+
+        -- Text object
+        map({'o', 'x'}, 'ih', ':<C-U>Gitsigns select_hunk<CR>')
       end,
     },
   },
@@ -226,7 +253,10 @@ vim.o.hlsearch = false
 vim.wo.number = true
 
 -- Enable mouse mode
-vim.o.mouse = 'a'
+-- vim.o.mouse = 'a'
+
+-- Disable mouse mode
+vim.o.mouse = ''
 
 -- Sync clipboard between OS and Neovim.
 --  Remove this option if you want your OS clipboard to remain independent.
@@ -311,6 +341,9 @@ vim.keymap.set('n', '<leader>sh', require('telescope.builtin').help_tags, { desc
 vim.keymap.set('n', '<leader>sw', require('telescope.builtin').grep_string, { desc = '[S]earch current [W]ord' })
 vim.keymap.set('n', '<leader>sg', require('telescope.builtin').live_grep, { desc = '[S]earch by [G]rep' })
 vim.keymap.set('n', '<leader>sd', require('telescope.builtin').diagnostics, { desc = '[S]earch [D]iagnostics' })
+
+-- shortcut for git status 
+vim.keymap.set("n", "<leader>gs", vim.cmd.Git, {desc = '[G]it [S]tatus'})
 
 -- [[ Configure Treesitter ]]
 -- See `:help nvim-treesitter`
