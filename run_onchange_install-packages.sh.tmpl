@@ -43,9 +43,6 @@ curl -sS https://raw.githubusercontent.com/ajeetdsouza/zoxide/main/install.sh | 
     ~/.fzf/install
 #fi
 
-#nvm
-curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.4/install.sh | bash
-
 TEMP_DEB="$(mktemp)" &&
 wget -O "$TEMP_DEB" 'https://github.com/dandavison/delta/releases/download/0.16.5/git-delta-musl_0.16.5_amd64.deb' &&
 sudo dpkg -i "$TEMP_DEB"
@@ -74,3 +71,6 @@ EOF
 $(brew --prefix)/opt/fzf/install
 
 {{ end -}}
+
+#nvm
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.4/install.sh | bash
