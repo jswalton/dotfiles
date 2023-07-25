@@ -4,7 +4,6 @@
 {{ $packages := list
      "bat"
      "git"
-     "neovim"
      "ripgrep"
      "zip"
      "unzip" -}}
@@ -24,7 +23,11 @@
 
 {{ $sudo }}{{$pkgmgr }} install -y {{ $packages | join " " }}
 
-
+#neovim
+sudo apt-get install ninja-build gettext cmake unzip curl
+git clone htps://github.com/neovim/neovim
+cd neovim && git checkout stable && make CMAKE_BUILD_TYPE=RelWithDebInfo
+cd build && cpack -G DEB && sudo dpkg -i --force-overwrite nvim-linux64.deb
 
 #exa
 curl -Lo exa.zip "https://github.com/ogham/exa/releases/download/v0.10.0/exa-linux-x86_64-v0.10.0.zip"
