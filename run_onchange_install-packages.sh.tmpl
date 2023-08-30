@@ -25,7 +25,7 @@
 
 #neovim
 sudo apt-get install ninja-build gettext cmake unzip curl
-git clone htps://github.com/neovim/neovim
+git clone https://github.com/neovim/neovim
 cd neovim && git checkout stable && make CMAKE_BUILD_TYPE=RelWithDebInfo
 cd build && cpack -G DEB && sudo dpkg -i --force-overwrite nvim-linux64.deb
 
