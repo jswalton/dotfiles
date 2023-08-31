@@ -71,6 +71,9 @@ EOF
 $(brew --prefix)/opt/fzf/install
 
 {{ end -}}
+#tpm (tmux plugins)
+if "test ! -d ~/.tmux/plugins/tpm" \
+   "run 'git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm && ~/.tmux/plugins/tpm/bin/install_plugins'"
 
 #nvm
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.4/install.sh | bash
