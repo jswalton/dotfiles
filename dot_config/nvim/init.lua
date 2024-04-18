@@ -40,7 +40,7 @@ P.S. You can delete this when you're done too. It's your config now :)
 --  NOTE: Must happen before plugins are required (otherwise wrong leader will be used)
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
-vim.o.fileformats='unix,dos'
+vim.o.fileformats = 'unix,dos'
 
 -- Install package manager
 --    https://github.com/folke/lazy.nvim
@@ -81,7 +81,16 @@ require('lazy').setup({
 
   {
     'stevearc/conform.nvim',
-    opts = {},
+    opts = {
+      -- Define your formatters
+      formatters_by_ft = {
+        lua = { "stylua" },
+        python = { "isort", "yapf" },
+        javascript = { "prettierd", "prettier" },
+        typescript = { "prettierd", "prettier" },
+        json = { "jq" },
+      },
+    },
   },
   -- NOTE: This is where your plugins related to LSP can be installed.
   --  The configuration is done below. Search for lspconfig to find it below.
@@ -116,7 +125,7 @@ require('lazy').setup({
     },
   },
   -- Useful plugin to show you pending keybinds.
-  { 'folke/which-key.nvim', opts = {} },
+  { 'folke/which-key.nvim',  opts = {} },
   {
     -- Adds git releated signs to the gutter, as well as utilities for managing changes
     'lewis6991/gitsigns.nvim',
@@ -135,31 +144,33 @@ require('lazy').setup({
           if vim.wo.diff then return ']c' end
           vim.schedule(function() gs.next_hunk() end)
           return '<Ignore>'
-        end, {expr=true})
+        end, { expr = true })
 
         map('n', '[c', function()
           if vim.wo.diff then return '[c' end
           vim.schedule(function() gs.prev_hunk() end)
           return '<Ignore>'
-        end, {expr=true})
+        end, { expr = true })
 
         -- Actions
-        map('n', '<leader>hs', gs.stage_hunk, {desc = '[H]unk [S]tage'})
-        map('n', '<leader>hr', gs.reset_hunk, {desc = '[H]unk [R]eset'})
-        map('v', '<leader>hs', function() gs.stage_hunk {vim.fn.line('.'), vim.fn.line('v')} end, {desc = '[H]unk [S]tage'})
-        map('v', '<leader>hr', function() gs.reset_hunk {vim.fn.line('.'), vim.fn.line('v')} end, {desc = '[H]unk [R]eset'})
-        map('n', '<leader>hsf', gs.stage_buffer, {desc = '[H]unk [S]tage [F]ile'})
-        map('n', '<leader>hu', gs.undo_stage_hunk, {desc = '[H]unk [U]ndo Stage'})
-        map('n', '<leader>hrf', gs.reset_buffer, {desc = '[H]unk [R]eset [F]ile'})
-        map('n', '<leader>hp', gs.preview_hunk, {desc = '[H]unk [P]review'})
-        map('n', '<leader>hb', function() gs.blame_line{full=true} end, {desc = '[H]unk [B]lame'})
-        map('n', '<leader>tb', gs.toggle_current_line_blame, {desc = '[T]oggle current line [B]lame'})
-        map('n', '<leader>hd', gs.diffthis, {desc = '[H]unk [D]iff'})
-        map('n', '<leader>hD', function() gs.diffthis('~') end, {desc = '[h]unk [D]iff'})
-        map('n', '<leader>td', gs.toggle_deleted, {desc = '[T]oggle [D]eleted'})
+        map('n', '<leader>hs', gs.stage_hunk, { desc = '[H]unk [S]tage' })
+        map('n', '<leader>hr', gs.reset_hunk, { desc = '[H]unk [R]eset' })
+        map('v', '<leader>hs', function() gs.stage_hunk { vim.fn.line('.'), vim.fn.line('v') } end,
+          { desc = '[H]unk [S]tage' })
+        map('v', '<leader>hr', function() gs.reset_hunk { vim.fn.line('.'), vim.fn.line('v') } end,
+          { desc = '[H]unk [R]eset' })
+        map('n', '<leader>hsf', gs.stage_buffer, { desc = '[H]unk [S]tage [F]ile' })
+        map('n', '<leader>hu', gs.undo_stage_hunk, { desc = '[H]unk [U]ndo Stage' })
+        map('n', '<leader>hrf', gs.reset_buffer, { desc = '[H]unk [R]eset [F]ile' })
+        map('n', '<leader>hp', gs.preview_hunk, { desc = '[H]unk [P]review' })
+        map('n', '<leader>hb', function() gs.blame_line { full = true } end, { desc = '[H]unk [B]lame' })
+        map('n', '<leader>tb', gs.toggle_current_line_blame, { desc = '[T]oggle current line [B]lame' })
+        map('n', '<leader>hd', gs.diffthis, { desc = '[H]unk [D]iff' })
+        map('n', '<leader>hD', function() gs.diffthis('~') end, { desc = '[h]unk [D]iff' })
+        map('n', '<leader>td', gs.toggle_deleted, { desc = '[T]oggle [D]eleted' })
 
         -- Text object
-        map({'o', 'x'}, 'ih', ':<C-U>Gitsigns select_hunk<CR>')
+        map({ 'o', 'x' }, 'ih', ':<C-U>Gitsigns select_hunk<CR>')
       end,
     },
   },
@@ -218,7 +229,16 @@ require('lazy').setup({
       },
     },
   },
-
+  {
+    "kylechui/nvim-surround",
+    version = "*", -- Use for stability; omit to use `main` branch for the latest features
+    event = "VeryLazy",
+    config = function()
+      require("nvim-surround").setup({
+        -- Configuration here, or leave empty to use defaults
+      })
+    end
+  },
   {
     -- Highlight, edit, and navigate code
     'nvim-treesitter/nvim-treesitter',
@@ -346,14 +366,14 @@ vim.keymap.set('n', '<leader>sg', require('telescope.builtin').live_grep, { desc
 vim.keymap.set('n', '<leader>sd', require('telescope.builtin').diagnostics, { desc = '[S]earch [D]iagnostics' })
 vim.keymap.set('n', '<leader>sr', require('telescope.builtin').resume, { desc = '[S]earch [R]resume' })
 
--- shortcut for git status 
-vim.keymap.set("n", "<leader>gs", vim.cmd.Git, {desc = '[G]it [S]tatus'})
+-- shortcut for git status
+vim.keymap.set("n", "<leader>gs", vim.cmd.Git, { desc = '[G]it [S]tatus' })
 
 -- [[ Configure Treesitter ]]
 -- See `:help nvim-treesitter`
 require('nvim-treesitter.configs').setup {
   -- Add languages to be installed here that you want installed for treesitter
-  ensure_installed = {'lua', 'python', 'javascript', 'typescript', 'vimdoc', 'vim' },
+  ensure_installed = { 'lua', 'python', 'javascript', 'typescript', 'vimdoc', 'vim' },
 
   -- Autoinstall languages that are not installed. Defaults to false (but you can change for yourself!)
   auto_install = false,
@@ -459,7 +479,6 @@ local on_attach = function(_, bufnr)
   nmap('<leader>wl', function()
     print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
   end, '[W]orkspace [L]ist Folders')
-
 end
 
 -- Create a command `:Format`
@@ -476,7 +495,7 @@ vim.api.nvim_create_user_command("Format", function(args)
 end, { range = true })
 
 -- document existing key chains
-require('which-key').register{
+require('which-key').register {
   ['<leader>c'] = { name = '[C]ode', _ = 'which_key_ignore' },
   ['<leader>d'] = { name = '[D]ocument', _ = 'which_key_ignore' },
   ['<leader>g'] = { name = '[G]it', _ = 'which_key_ignore' },
@@ -488,7 +507,7 @@ require('which-key').register{
 
 -- mason-lspconfig requires that these setup functions are called in this order
 -- before setting up the servers.
-require('mason').setup()
+require('mason').setup({log_level = vim.log.levels.DEBUG})
 require('mason-lspconfig').setup()
 
 -- Enable the following language servers
@@ -517,7 +536,7 @@ local servers = {
       keyordering = false
     }
   },
-  tsserver = {},  --jswalton custom
+  tsserver = {}, --jswalton custom
   lua_ls = {
     Lua = {
       workspace = { checkThirdParty = false },
@@ -549,8 +568,8 @@ mason_lspconfig.setup_handlers {
       filetypes = (servers[server_name] or {}).filetypes,
     }
   end,
-  ["angularls"] = function ()
-    require'lspconfig'.angularls.setup{
+  ["angularls"] = function()
+    require 'lspconfig'.angularls.setup {
       root_dir = require('lspconfig.util').root_pattern('nx.json', 'angular.json'),
       on_attach = on_attach,
       settings = servers["angularls"],
