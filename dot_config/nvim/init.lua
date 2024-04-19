@@ -571,7 +571,6 @@ require('lazy').setup({
             keyordering = false,
           },
         },
-        tsserver = {}, --jswalton custom
         lua_ls = {
           -- cmd = {...},
           -- filetypes = { ...},
@@ -601,6 +600,10 @@ require('lazy').setup({
       local ensure_installed = vim.tbl_keys(servers or {})
       vim.list_extend(ensure_installed, {
         'stylua', -- Used to format Lua code
+        'prettierd',
+        'prettier',
+        'isort',
+        'yapf',
       })
       require('mason-tool-installer').setup { ensure_installed = ensure_installed }
 
@@ -618,7 +621,11 @@ require('lazy').setup({
       }
     end,
   },
-
+  {
+    'pmizio/typescript-tools.nvim',
+    dependencies = { 'nvim-lua/plenary.nvim', 'neovim/nvim-lspconfig' },
+    opts = {},
+  },
   { -- Autoformat
     'stevearc/conform.nvim',
     lazy = false,
