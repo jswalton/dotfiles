@@ -1,0 +1,12 @@
+{{- if eq .chezmoi.os "darwin" -}}
+#!/bin/bash
+brew "bat"
+brew "exa"
+brew "fzf"
+brew "ripgrep"
+brew "neovim"
+brew "zoxide"
+brew "git-delta"
+brew "jesseduffield/lazygit/lazygit"
+EOF
+{{ end -}}

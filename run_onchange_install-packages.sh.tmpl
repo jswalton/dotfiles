@@ -53,22 +53,6 @@ curl -Lo lazygit.tar.gz "https://github.com/jesseduffield/lazygit/releases/lates
 tar xf lazygit.tar.gz lazygit
 sudo install lazygit /usr/local/bin
 
-{{ else if eq .chezmoi.os "darwin" -}}
-#!/bin/sh
-
-brew bundle --no-lock --file=/dev/stdin <<EOF
-brew "bat"
-brew "exa"
-brew "fzf"
-brew "ripgrep"
-brew "neovim"
-brew "zoxide"
-brew "git-delta"
-brew "jesseduffield/lazygit/lazygit"
-EOF
-$(brew --prefix)/opt/fzf/install
-
-{{ end -}}
 #tpm (tmux plugins)
 if "test ! -d ~/.tmux/plugins/tpm" \
    "run 'git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm && ~/.tmux/plugins/tpm/bin/install_plugins'"
