@@ -174,12 +174,14 @@ export NVM_DIR="$HOME/.nvm"
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
+{{ if eq .chezmoi.os "darwin" }}
 # Set up fzf key bindings and fuzzy completion
 eval "$(fzf --zsh)"
+{{ end }}
 
-# for windows terminal / wsl
 {{ if eq .chezmoi.os "linux" }}
 {{   if (.chezmoi.kernel.osrelease | lower | contains "microsoft") }}
+# for windows terminal / wsl
 keep_current_path() {
   printf "\e]9;9;%s\e\\" "$(wslpath -w "$PWD")"
 }
