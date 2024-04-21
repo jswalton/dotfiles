@@ -1,5 +1,6 @@
-{{ if eq .chezmoi.os "linux" -}}
 #!/bin/sh
+
+{{ if eq .chezmoi.os "linux" -}}
 
 {{ $packages := list
      "bat"
@@ -22,6 +23,8 @@
 {{ end -}}
 
 {{ $sudo }}{{$pkgmgr }} install -y {{ $packages | join " " }}
+
+{{ end -}}
 
 #neovim
 sudo apt-get install ninja-build gettext cmake unzip curl
@@ -56,4 +59,3 @@ git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm && ~/.tmux/plu
 
 #nvm
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.4/install.sh | bash
-{{ end -}}
