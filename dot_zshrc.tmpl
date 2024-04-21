@@ -138,10 +138,10 @@ alias cat=bat
 alias cat=batcat
 
 {{- end }}
-{{- if lookPath "exa" }}
-#remap ls to exa
-alias ls='exa --group-directories-first --icons --color-scale'
-alias lt='exa --tree --level=2 --icons' # Show in tree view
+{{- if lookPath "eza" }}
+#remap ls to eza
+alias ls='eza --group-directories-first --icons --color-scale'
+alias lt='eza --tree --level=2 --icons' # Show in tree view
 alias l='ls -a'                         # Short, all files
 alias ld='l -D'                         # Short, only directories
 alias ll='ls -lbG --git'                # Long, file size prefixes, grid, git status
