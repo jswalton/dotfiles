@@ -4,10 +4,13 @@
 
 {{ $packages := list
      "bat"
-     "git"
+     "cmake"
+     "curl"
+     "gettext"
+     "ninja-build"
      "ripgrep"
-     "zip"
-     "unzip" -}}
+     "unzip"
+     "zip" -}}
 
 {{ $sudo := "sudo " -}}
 {{ if eq .chezmoi.username "root" -}}
@@ -24,35 +27,35 @@
 
 {{ $sudo }}{{$pkgmgr }} install -y {{ $packages | join " " }}
 
-{{ end -}}
-
 #neovim
-sudo apt-get install ninja-build gettext cmake unzip curl
 git clone https://github.com/neovim/neovim
 cd neovim && git checkout stable && make CMAKE_BUILD_TYPE=RelWithDebInfo
-cd build && cpack -G DEB && sudo dpkg -i --force-overwrite nvim-linux64.deb
+cd build && cpack -G DEB && {{ $sudo }} dpkg -i --force-overwrite nvim-linux64.deb
 
-#exa
-curl -Lo exa.zip "https://github.com/ogham/exa/releases/download/v0.10.0/exa-linux-x86_64-v0.10.0.zip"
-sudo unzip -q exa.zip bin/exa -d /usr/local
-rm -rf exa.zip
+TEMP_DEB="$(mktemp)" &&
+wget -O "$TEMP_DEB" 'https://github.com/dandavison/delta/releases/download/0.16.5/git-delta-musl_0.16.5_amd64.deb' &&
+{{ $sudo }} dpkg -i "$TEMP_DEB"
+rm -f "$TEMP_DEB"
 
 #zoxide
 curl -sS https://raw.githubusercontent.com/ajeetdsouza/zoxide/main/install.sh | bash
+
+#exa
+wget -c https://github.com/eza-community/eza/releases/latest/download/eza_x86_64-unknown-linux-gnu.tar.gz -O - | tar xz
+{{ $sudo }} chmod +x eza
+{{ $sudo }} chown root:root eza
+{{ $sudo }} mv eza /usr/local/bin/eza
 
 #fzf
  git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
  ~/.fzf/install
 
-TEMP_DEB="$(mktemp)" &&
-wget -O "$TEMP_DEB" 'https://github.com/dandavison/delta/releases/download/0.16.5/git-delta-musl_0.16.5_amd64.deb' &&
-sudo dpkg -i "$TEMP_DEB"
-rm -f "$TEMP_DEB"
-
 LAZYGIT_VERSION=$(curl -s "https://api.github.com/repos/jesseduffield/lazygit/releases/latest" | grep -Po '"tag_name": "v\K[^"]*')
 curl -Lo lazygit.tar.gz "https://github.com/jesseduffield/lazygit/releases/latest/download/lazygit_${LAZYGIT_VERSION}_Linux_x86_64.tar.gz"
 tar xf lazygit.tar.gz lazygit
-sudo install lazygit /usr/local/bin
+{{ $sudo }} install lazygit /usr/local/bin
+
+{{ end -}}
 
 #tpm (tmux plugins)
 git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm && ~/.tmux/plugins/tpm/bin/install_plugins
