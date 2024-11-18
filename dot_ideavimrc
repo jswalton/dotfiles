@@ -1,0 +1,78 @@
+" .ideavimrc is a configuration file for IdeaVim plugin. It uses
+"   the same commands as the original .vimrc configuration.
+" You can find a list of commands here: https://jb.gg/h38q75
+" Find more examples here: https://jb.gg/share-ideavimrc
+
+
+"" -- Suggested options --
+" Show a few lines of context around the cursor. Note that this makes the
+" text scroll if you mouse-click near the start or end of the window.
+set scrolloff=5
+
+" Do incremental searching.
+set incsearch
+
+" Don't use Ex mode, use Q for formatting.
+map Q gq
+
+" --- Enable IdeaVim plugins https://jb.gg/ideavim-plugins
+""" Map leader to space ---------------------
+let mapleader=" "
+" Highlight copied text
+Plug 'machakann/vim-highlightedyank'
+" Commentary plugin
+Plug 'tpope/vim-commentary'
+Plug 'tpope/vim-surround'
+Plug 'vim-scripts/argtextobj.vim'
+set which-key
+set timeoutlen=3000
+
+map <leader>sf <Action>(GotoFile)
+map gd <Action>(GotoDeclaration)
+map <leader>f <Action>(ReformatCode)
+map gr <Action>(GotoDeclaration)
+map gI <Action>(GotoImplementation)
+
+map <leader>q <Action>(ActivateProblemsViewToolWindow)
+map ]d <Action>(GotoNextError)
+map [d <Action>(GotoPreviousError)
+
+"" git hunks
+map <leader>hr <Action>(Vcs.RollbackChangedLines)
+map <leader>hR <Action>(ChangesView.Revert)
+
+map [c <Action>(VcsShowPrevChangeMarker)
+map ]c <Action>(VcsShowNextChangeMarker)
+
+"" rename
+map <leader>rn <Action>(RenameElement)
+
+
+" find in buffer / window
+map <leader>/ <Action>(Find)
+map <leader><space> <Action>(Switcher)
+map <leader>sg <Action>(SearchEverywhere)
+
+" Splits
+map <leader><s-\> <Action>(SplitVertically)
+map <leader>_ <Action>(SplitHorizontally)
+
+" code action
+map <leader>ca <Action>(ShowIntentionActions)
+
+"" Window / Split moves
+inoremap <C-l> <C-w>l
+inoremap <C-h> <C-w>h
+inoremap <C-j> <C-w>j
+inoremap <C-k> <C-w>k
+noremap <C-l> <C-w>l
+noremap <C-j> <C-w>j
+noremap <C-k> <C-w>k
+noremap <C-h> <C-w>h
+map <C-\> <Action>(JumpToLastWindow)
+
+"" Map <leader>d to start debug
+"map <leader>d <Action>(Debug)
+
+"" Map \b to toggle the breakpoint on the current line
+map <leader>b <Action>(ToggleLineBreakpoint)
